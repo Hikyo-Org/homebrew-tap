@@ -1,0 +1,35 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tap-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci-required:
+    name: ci-required
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Validate tap
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f README.md
+          if [[ ! -f Casks/hikyo.rb ]]; then
+            test -f Casks/README.md
+            exit 0
+          fi
+          ruby -c Casks/hikyo.rb
+          brew tap hikyo-org/tap "$GITHUB_WORKSPACE"
+          brew audit --cask --strict hikyo-org/tap/hikyo
+          brew style --cask hikyo-org/tap/hikyo
