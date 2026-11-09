@@ -31,5 +31,7 @@ jobs:
           fi
           ruby -c Casks/hikyo.rb
           brew tap hikyo-org/tap "$GITHUB_WORKSPACE"
+          # Homebrew refuses casks from third-party taps until they are trusted.
+          brew trust hikyo-org/tap
           brew audit --cask --strict hikyo-org/tap/hikyo
           brew style --cask hikyo-org/tap/hikyo
