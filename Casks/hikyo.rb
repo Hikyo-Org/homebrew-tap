@@ -11,5 +11,6 @@ cask "hikyo" do
   homepage "https://hikyo.app/"
 
   conflicts_with cask: "hikyo@nightly"
+
   binary "hikyo"
 end
